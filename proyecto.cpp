@@ -5,17 +5,26 @@ int main(){
 
     struct libro{
         int ID=0;
-        int Titulo=0;
-        int autor=0;
+        string Titulo;
+        string autor;
         int unidades_disponible=0;
     
     };
     struct usuario{
-        int estudiantes=0;
-        int datos_de_usuario=0;
+        int id=0;
+        string nombre;
 
-
+       
     };
+    libro lista_Libros[100];
+    int total_libros = 0;
+
+    usuario lista_usuarios[100];
+    int total_usuarios =0;
+
+    int opcion= 0;
+
+
     
     
     
