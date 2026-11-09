@@ -2,6 +2,43 @@
 #include<string>
 using namespace std;
 
+
+    struct libro{
+        int ID=0;
+        string Titulo;
+        string autor;
+        int unidades_disponible=0;
+    
+    };
+    struct usuario{
+        int id=0;
+        string nombre;
+
+       
+    };
+    libro lista_Libros[100];
+    int total_libros = 0;
+
+    usuario lista_usuarios[100];
+    int total_usuarios =0;
+
+    int opcion= 0;
+
+
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
 // Definimos un límite máximo para nuestros arreglos
 const int MAX_USUARIOS = 100;
 // structs fuera del main para que las funciones puedan usarlos
@@ -59,5 +96,6 @@ void registrarUsuario() {
 
 int main() {
     
+
     return 0;
 }
