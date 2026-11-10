@@ -4,11 +4,12 @@ using namespace std;
 
 // Definimos un límite máximo para nuestros arreglos
 const int MAX_USUARIOS = 100;
+const int MAX_LIBROS = 100;
 // structs fuera del main para que las funciones puedan usarlos
 struct libro {
     int ID = 0;
-    int Titulo = 0;
-    int autor = 0;
+    int Titulo = 0;// Nota para Sergio: Cambiar a string luego
+    int autor = 0;// Nota para Sergio: Cambiar a string luego
     int unidades_disponible = 0;
 };
 struct usuario {
@@ -20,6 +21,18 @@ struct usuario {
 // Arreglo y contador para el registro de usuarios (variables globales)
 usuario listaUsuarios[MAX_USUARIOS];
 int totalUsuarios = 0;
+
+libro inventarioLibros[MAX_LIBROS];
+int totalLibros = 0; // Sergio, usa esta variable en tu función de agregar libros
+
+// Declaración de funciones
+void registrarUsuario();
+void prestarLibro();
+
+int main() {
+    
+    return 0;
+}
 
 // Módulo de Registro de Usuarios
 void registrarUsuario() {
@@ -57,7 +70,24 @@ void registrarUsuario() {
         }
     }
 
-int main() {
+    // Módulo de Préstamos y Devoluciones
+void prestarLibro() {
+    cout << "\n--- Modulo de Prestamos ---" << endl;
+    int idBuscar;
+    cout << "Ingrese el ID del libro que desea prestar: ";
+    cin >> idBuscar;
+
+    bool libroEncontrado = false;
     
-    return 0;
+    // for para buscar el libro en el inventario
+    for (int i = 0; i < totalLibros; i++) {
+        if (inventarioLibros[i].ID == idBuscar) {
+            libroEncontrado = true;
+            cout << "Libro encontrado en el sistema." << endl;
+        }
+    }
+
+    if (libroEncontrado == false) {
+        cout << "Error: El libro con el ID ingresado no existe." << endl;
+    }
 }
