@@ -70,7 +70,7 @@ void registrarUsuario() {
         }
     }
 
-    // Módulo de Préstamos y Devoluciones
+// Módulo de Préstamos y Devoluciones
 void prestarLibro() {
     cout << "\n--- Modulo de Prestamos ---" << endl;
     int idBuscar;
@@ -83,7 +83,14 @@ void prestarLibro() {
     for (int i = 0; i < totalLibros; i++) {
         if (inventarioLibros[i].ID == idBuscar) {
             libroEncontrado = true;
-            cout << "Libro encontrado en el sistema." << endl;
+            
+            // if-else para verificar estrictamente si hay stock disponible antes de prestar
+            if (inventarioLibros[i].unidades_disponible > 0) {
+                inventarioLibros[i].unidades_disponible--; // Descontamos 1 unidad del inventario
+                cout << "Prestamo realizado con exito. Disfrute su lectura." << endl;
+            } else {
+                cout << "Error: No hay unidades disponibles para prestar de este libro en este momento." << endl;
+            }
         }
     }
 
