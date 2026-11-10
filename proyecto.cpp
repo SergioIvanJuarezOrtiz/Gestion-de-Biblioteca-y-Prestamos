@@ -112,8 +112,10 @@ void devolverLibro() {
     // Busca el libro en el inventario
     for (int i = 0; i < totalLibros; i++) {
         if (inventarioLibros[i].ID == idDevolver) {
-            libroEncontrado = true;
-            cout << "Libro localizado en el sistema para devolucion." << endl;
+            //reintegrar stock
+            inventarioLibros[i].unidades_disponible++;
+            cout << "Gracias por su devolucion, estudiante " << carnetEstudiante << "." << endl;
+            cout << "Libro reintegrado al inventario con exito." << endl;
         }
     }
 
