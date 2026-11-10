@@ -2,52 +2,16 @@
 #include<string>
 using namespace std;
 
-
-    struct libro{
+// Límite máximo para nuestros arreglos
+const int MAX_USUARIOS = 100;
+const int MAX_LIBROS = 100;
+// structs fuera del main para que las funciones puedan usarlos
+struct libro{
         int ID=0;
         string Titulo;
         string autor;
         int unidades_disponible=0;
-    
     };
-    struct usuario{
-        int id=0;
-        string nombre;
-
-       
-    };
-    libro lista_Libros[100];
-    int total_libros = 0;
-
-    usuario lista_usuarios[100];
-    int total_usuarios =0;
-
-    int opcion= 0;
-
-
-    
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-// Definimos un límite máximo para nuestros arreglos
-const int MAX_USUARIOS = 100;
-// structs fuera del main para que las funciones puedan usarlos
-struct libro {
-    int ID = 0;
-    int Titulo = 0;
-    int autor = 0;
-    int unidades_disponible = 0;
-};
 struct usuario {
     string carnet;
     string nombre;
@@ -57,6 +21,19 @@ struct usuario {
 // Arreglo y contador para el registro de usuarios (variables globales)
 usuario listaUsuarios[MAX_USUARIOS];
 int totalUsuarios = 0;
+
+libro inventarioLibros[MAX_LIBROS];
+int totalLibros = 0; // Sergio, usa esta variable en tu función de agregar libros
+
+// Declaración de funciones
+void registrarUsuario();
+void prestarLibro();
+void devolverLibro();
+
+int main() {
+    int opcion= 0;
+    return 0;
+}
 
 // Módulo de Registro de Usuarios
 void registrarUsuario() {
@@ -94,8 +71,54 @@ void registrarUsuario() {
         }
     }
 
-int main() {
-    
+// Módulo de Préstamos y Devoluciones
+void prestarLibro() {
+    cout << "\n--- Modulo de Prestamos ---" << endl;
+    int idBuscar;
+    cout << "Ingrese el ID del libro que desea prestar: ";
+    cin >> idBuscar;
 
-    return 0;
+    bool libroEncontrado = false;
+    // for para buscar el libro en el inventario
+    for (int i = 0; i < totalLibros; i++) {
+        if (inventarioLibros[i].ID == idBuscar) {
+            libroEncontrado = true;
+            
+            // if-else para verificar estrictamente si hay stock disponible antes de prestar
+            if (inventarioLibros[i].unidades_disponible > 0) {
+                inventarioLibros[i].unidades_disponible--; // Descontamos 1 unidad del inventario
+                cout << "Prestamo realizado con exito. Disfrute su lectura." << endl;
+            } else {
+                cout << "Error: No hay unidades disponibles para prestar de este libro en este momento." << endl;
+            }
+        }
+    }
+
+    if (libroEncontrado == false) {
+        cout << "Error: El libro con el ID ingresado no existe." << endl;
+    }
+}
+
+// Módulo de Devoluciones
+void devolverLibro() {
+    cout << "\n--- Modulo de Devoluciones ---" << endl;
+    int idDevolver;
+    cout << "Ingrese el ID del libro que desea devolver: ";
+    cin >> idDevolver;
+
+    bool libroEncontrado = false;
+
+    // Busca el libro en el inventario
+    for (int i = 0; i < totalLibros; i++) {
+        if (inventarioLibros[i].ID == idDevolver) {
+            //reintegrar stock
+            inventarioLibros[i].unidades_disponible++;
+            cout << "Gracias por su devolucion, estudiante " << carnetEstudiante << "." << endl;
+            cout << "Libro reintegrado al inventario con exito." << endl;
+        }
+    }
+
+    if (libroEncontrado == false) {
+        cout << "Error: El ID ingresado no corresponde a ningun libro de nuestra biblioteca." << endl;
+    }
 }
