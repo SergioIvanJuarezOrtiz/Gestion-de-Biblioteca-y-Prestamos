@@ -3,6 +3,9 @@
 using namespace std;
 int main(){
 
+    const int MAX_USUARIOS = 100;
+    const int MAX_LIBROS = 100;
+
     struct libro{
         int ID=0;
         string Titulo;
@@ -11,19 +14,32 @@ int main(){
     
     };
     struct usuario{
-        int id=0;
+        string carnet;
         string nombre;
-
-       
+        string facultad;
     };
-    libro lista_Libros[100];
-    int total_libros = 0;
+    struct prestamo{
+        string carnet_usuario;
+        string id_prestamo;
+        string id_libro;
+        bool activo;
 
-    usuario lista_usuarios[100];
-    int total_usuarios =0;
+    };
 
-    int opcion= 0;
+    libro inventario_libro[MAX_LIBROS];
+    int total_libros=0;
 
+    usuario lista_usuarios[MAX_USUARIOS];
+    int total_usuarios=0;
+
+    
+
+
+
+
+
+
+    
 
     
     
