@@ -28,6 +28,7 @@ int totalLibros = 0; // Sergio, usa esta variable en tu función de agregar libr
 // Declaración de funciones
 void registrarUsuario();
 void prestarLibro();
+void devolverLibro();
 
 int main() {
     
@@ -96,5 +97,27 @@ void prestarLibro() {
 
     if (libroEncontrado == false) {
         cout << "Error: El libro con el ID ingresado no existe." << endl;
+    }
+}
+
+// Módulo de Devoluciones
+void devolverLibro() {
+    cout << "\n--- Modulo de Devoluciones ---" << endl;
+    int idDevolver;
+    cout << "Ingrese el ID del libro que desea devolver: ";
+    cin >> idDevolver;
+
+    bool libroEncontrado = false;
+
+    // Busca el libro en el inventario
+    for (int i = 0; i < totalLibros; i++) {
+        if (inventarioLibros[i].ID == idDevolver) {
+            libroEncontrado = true;
+            cout << "Libro localizado en el sistema para devolucion." << endl;
+        }
+    }
+
+    if (libroEncontrado == false) {
+        cout << "Error: El ID ingresado no corresponde a ningun libro de nuestra biblioteca." << endl;
     }
 }
