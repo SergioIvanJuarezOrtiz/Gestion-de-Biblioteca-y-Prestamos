@@ -36,8 +36,8 @@ struct libro{
     usuario lista_usuarios[MAX_USUARIOS];
     int total_usuarios=0;
 
-    void registrar_libro();
-    void registar_inventario();
+    void registrarLibro();
+    void mostrarInventario();
     
     
     int main(){
