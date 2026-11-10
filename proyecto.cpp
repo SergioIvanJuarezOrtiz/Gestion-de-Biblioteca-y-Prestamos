@@ -6,12 +6,9 @@ using namespace std;
     const int MAX_USUARIOS = 100;
     const int MAX_LIBROS = 100;
 
-    struct libro{
+    
 
-// Límite máximo para nuestros arreglos
-const int MAX_USUARIOS = 100;
-const int MAX_LIBROS = 100;
-// structs fuera del main para que las funciones puedan usarlos
+
 struct libro{
 
         int ID=0;
@@ -58,18 +55,9 @@ struct libro{
 
 
 
-    };
-struct usuario {
-    string carnet;
-    string nombre;
-    string Facultad;
-};
 
 
 
-
-libro inventarioLibros[MAX_LIBROS];
-int totalLibros = 0; // Sergio, usa esta variable en tu función de agregar libros
 
 // Declaración de funciones
 void registrarUsuario();
