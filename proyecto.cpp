@@ -35,6 +35,7 @@ int totalLibros = 0; // Sergio, usa esta variable en tu función de agregar libr
 void registrarUsuario();
 void prestarLibro();
 void devolverLibro();
+void mostrarUsuarios();
 
 int main() {
     int opcion= 0;
@@ -108,6 +109,10 @@ void prestarLibro() {
 // Módulo de Devoluciones
 void devolverLibro() {
     cout << "\n--- Modulo de Devoluciones ---" << endl;
+    string carnetEstudiante;
+    cout << "Ingrese su carnet de estudiante: ";
+    cin >> carnetEstudiante;
+
     int idDevolver;
     cout << "Ingrese el ID del libro que desea devolver: ";
     cin >> idDevolver;
@@ -128,3 +133,19 @@ void devolverLibro() {
         cout << "Error: El ID ingresado no corresponde a ningun libro de nuestra biblioteca." << endl;
     }
 }
+
+// Función para listar los usuarios registrados
+void mostrarUsuarios() {
+    cout << "\n--- Listado de Estudiantes Registrados ---" << endl;
+    if (totalUsuarios == 0) {
+        cout << "No hay estudiantes registrados en el sistema actualmente." << endl;
+    } else {
+        for (int i = 0; i < totalUsuarios; i++) {
+            cout << i + 1 << ". Carnet: " << listaUsuarios[i].carnet 
+                 << " | Nombre: " << listaUsuarios[i].nombre 
+                 << " | Facultad: " << listaUsuarios[i].Facultad << endl;
+        }
+    }
+    cout << "------------------------------------------" << endl;
+}
+
