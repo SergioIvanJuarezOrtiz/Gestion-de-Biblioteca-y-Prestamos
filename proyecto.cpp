@@ -2,62 +2,34 @@
 #include<string>
 using namespace std;
 
-
-    const int MAX_USUARIOS = 100;
-    const int MAX_LIBROS = 100;
-
-    
-
-
+// Límite máximo para nuestros arreglos
+const int MAX_USUARIOS = 100;
+const int MAX_LIBROS = 100;
+// structs fuera del main para que las funciones puedan usarlos globalmente
 struct libro{
-
         int ID=0;
         string Titulo;
         string autor;
-        int unidades_disponibles;
-    
+        int unidades_disponible=0;
     };
-    struct usuario{
-        string carnet;
-        string nombre;
-        string facultad;
-    };
-    struct prestamo{
-        string carnet_usuario;
-        string id_prestamo;
-        string id_libro;
-        bool activo;
+struct usuario {
+    string carnet;
+    string nombre;
+    string Facultad;
+};
+struct prestamo{
+    string carnet_usuario;
+    string id_prestamo;
+    string id_libro;
+    bool activo;
+};
 
-    };
+// Arreglo y contador para el registro de usuarios (variables globales)
+usuario listaUsuarios[MAX_USUARIOS];
+int totalUsuarios = 0;
 
-    libro inventario_libro[MAX_LIBROS];
-    int total_libros=0;
-
-    usuario lista_usuarios[MAX_USUARIOS];
-    int total_usuarios=0;
-
-    void registrarLibro();
-    void mostrarInventario();
-    
-    
-    int main(){
-
-
-
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
+libro inventarioLibros[MAX_LIBROS];
+int totalLibros = 0; // Sergio, usa esta variable en tu función de agregar libros
 
 // Declaración de funciones
 void registrarUsuario();
@@ -79,26 +51,31 @@ void registrarUsuario() {
         cout << "Ingrese el carnet (Ej. 00024026): ";
         cin >> carnetIngresado;
 
+        // Control de duplicados
+        bool duplicado = false;
+        for (int i = 0; i < totalUsuarios; i++) {
+            if (listaUsuarios[i].carnet == carnetIngresado) {
+                duplicado = true;
+            }
+        }
+        // if-else para decidir si se registra o se rechaza
+        if (duplicado == true) {
+            cout << "Error: El carnet ingresado ya se encuentra registrado." << endl;
+        } else {
+            listaUsuarios[totalUsuarios].carnet = carnetIngresado;
 
-
-
-
-    
-
-    
-    
-    
-
-
-
-
-
-
-
-
-
-
-    return 0;
+        cout << "Ingrese el primer nombre: ";
+        cin >> listaUsuarios[totalUsuarios].nombre;
+        
+        cout << "Ingrese la facultad (Sin espacios): ";
+        cin >> listaUsuarios[totalUsuarios].Facultad;
+        
+        totalUsuarios++;
+        cout << "¡Usuario registrado exitosamente!" << endl;
+        }} else {
+        cout << "\nError: No se pueden registrar mas usuarios, limite alcanzado." << endl;
+        }
+    }
 
 // Módulo de Préstamos y Devoluciones
 void prestarLibro() {
@@ -150,5 +127,4 @@ void devolverLibro() {
     if (libroEncontrado == false) {
         cout << "Error: El ID ingresado no corresponde a ningun libro de nuestra biblioteca." << endl;
     }
-
 }
