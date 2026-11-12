@@ -36,6 +36,7 @@ void registrarUsuario();
 void prestarLibro();
 void devolverLibro();
 void mostrarUsuarios();
+void mostrarIntegrantes();
 
 int main() {
     int opcion= 0;
@@ -149,3 +150,12 @@ void mostrarUsuarios() {
     cout << "------------------------------------------" << endl;
 }
 
+// Función para mostrar los integrantes del proyecto
+void mostrarIntegrantes() {
+    cout << "\n==========================================" << endl;
+    cout << "       INTEGRANTES DEL PROYECTO" << endl;
+    cout << "==========================================" << endl;
+    cout << "1. Sergio Ivan Juarez Ortiz - 00011826" << endl;
+    cout << "2. Christhian Eduardo Sanchez Lopez - 00024026" << endl;
+    cout << "==========================================" << endl;
+}
