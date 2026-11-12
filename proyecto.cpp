@@ -41,7 +41,10 @@ void mostrarUsuarios();
 void mostrarIntegrantes(); 
 
 int main() {
-    int opcion = 0;
+    //variable para el menu principal
+    int opcion=0;
+
+    
     
     // Sergio agregará aquí el bucle while y el switch principal
     
