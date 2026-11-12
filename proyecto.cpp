@@ -5,13 +5,14 @@ using namespace std;
 // Límite máximo para nuestros arreglos
 const int MAX_USUARIOS = 100;
 const int MAX_LIBROS = 100;
+
 // structs fuera del main para que las funciones puedan usarlos globalmente
 struct libro{
-        int ID=0;
-        string Titulo;
-        string autor;
-        int unidades_disponible=0;
-    };
+    int ID=0;
+    string Titulo;
+    string autor;
+    int unidades_disponible=0;
+};
 struct usuario {
     string carnet;
     string nombre;
@@ -36,12 +37,26 @@ void registrarUsuario();
 void prestarLibro();
 void devolverLibro();
 void mostrarUsuarios();
-void mostrarIntegrantes();
+void mostrarIntegrantes(); 
 
 int main() {
-    int opcion= 0;
+    int opcion = 0;
+    
+    // Sergio agregará aquí el bucle while y el switch principal
+    
     return 0;
 }
+
+/* ======================================================================
+   DECLARACIÓN DE USO DE IA 
+   1. Herramienta utilizada: Gemini
+   2. Parte del proyecto: Módulo de Registro (registrarUsuario) y Búsquedas.
+   3. Fragmento apoyado: La lógica de usar una variable booleana ("bandera") 
+      dentro de un ciclo 'for' para detectar duplicados o encontrar IDs.
+   4. Modificaciones realizadas: Se adaptó el código generado para que 
+      utilice nuestros structs ('listaUsuarios' e 'inventarioLibros'), 
+      y se personalizaron los mensajes de salida (cout) según la rúbrica.
+====================================================================== */
 
 // Módulo de Registro de Usuarios
 void registrarUsuario() {
@@ -53,31 +68,33 @@ void registrarUsuario() {
         cout << "Ingrese el carnet (Ej. 00024026): ";
         cin >> carnetIngresado;
 
-        // Control de duplicados
+        // Control de duplicados usando lógica de bandera booleana
         bool duplicado = false;
         for (int i = 0; i < totalUsuarios; i++) {
             if (listaUsuarios[i].carnet == carnetIngresado) {
                 duplicado = true;
             }
         }
+        
         // if-else para decidir si se registra o se rechaza
         if (duplicado == true) {
             cout << "Error: El carnet ingresado ya se encuentra registrado." << endl;
         } else {
             listaUsuarios[totalUsuarios].carnet = carnetIngresado;
 
-        cout << "Ingrese el primer nombre: ";
-        cin >> listaUsuarios[totalUsuarios].nombre;
-        
-        cout << "Ingrese la facultad (Sin espacios): ";
-        cin >> listaUsuarios[totalUsuarios].Facultad;
-        
-        totalUsuarios++;
-        cout << "¡Usuario registrado exitosamente!" << endl;
-        }} else {
-        cout << "\nError: No se pueden registrar mas usuarios, limite alcanzado." << endl;
+            cout << "Ingrese el primer nombre: ";
+            cin >> listaUsuarios[totalUsuarios].nombre;
+            
+            cout << "Ingrese la facultad (Sin espacios): ";
+            cin >> listaUsuarios[totalUsuarios].Facultad;
+            
+            totalUsuarios++;
+            cout << "¡Usuario registrado exitosamente!" << endl;
         }
+    } else {
+        cout << "\nError: No se pueden registrar mas usuarios, limite alcanzado." << endl;
     }
+}
 
 // Módulo de Préstamos y Devoluciones
 void prestarLibro() {
@@ -87,6 +104,7 @@ void prestarLibro() {
     cin >> idBuscar;
 
     bool libroEncontrado = false;
+    
     // for para buscar el libro en el inventario
     for (int i = 0; i < totalLibros; i++) {
         if (inventarioLibros[i].ID == idBuscar) {
@@ -123,7 +141,9 @@ void devolverLibro() {
     // Busca el libro en el inventario
     for (int i = 0; i < totalLibros; i++) {
         if (inventarioLibros[i].ID == idDevolver) {
-            //reintegrar stock
+            libroEncontrado = true;
+            
+            // Reintegrar stock sumando 1 unidad
             inventarioLibros[i].unidades_disponible++;
             cout << "Gracias por su devolucion, estudiante " << carnetEstudiante << "." << endl;
             cout << "Libro reintegrado al inventario con exito." << endl;
