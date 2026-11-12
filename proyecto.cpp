@@ -6,11 +6,12 @@ using namespace std;
     const int MAX_USUARIOS = 100;
     const int MAX_LIBROS = 100;
 
-    struct libro{
+   
+struct libro{
         int ID=0;
         string Titulo;
         string autor;
-        int unidades_disponible=0;
+        int unidades_disponibles=0;
     
     };
     struct usuario{
@@ -24,19 +25,51 @@ using namespace std;
         string id_libro;
         bool activo;
 
-    };
+    }; 
+    
+    usuario listaUsuarios[MAX_USUARIOS];
+    int totalUsuarios=0;
 
-    libro inventario_libro[MAX_LIBROS];
-    int total_libros=0;
+    libro inventarioLibros[MAX_LIBROS];
+    int totalLibros=0;
 
-    usuario lista_usuarios[MAX_USUARIOS];
-    int total_usuarios=0;
+   
 
-    void registrar_libro();
-    void mostrar_inventario();
+    void registrarLibro();
+    void mostrarInventario();
     
     
-    int main(){
+    int main(){    
+
+        int opcion = 0;
+
+        
+
+
+
+
+
+
+     
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
 
 
 
@@ -55,6 +88,11 @@ using namespace std;
 
 
 
+
+
+
+
+
     
 
     
@@ -69,6 +107,3 @@ using namespace std;
 
 
 
-
-    return 0;
-}
