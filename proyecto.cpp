@@ -34,6 +34,7 @@ int totalUsuarios = 0;
 // Declaración de funciones
 void registrarLibro();
 void mostrarInventario();
+void buscarLibro();
 void registrarUsuario();
 void prestarLibro();
 void devolverLibro();
@@ -43,6 +44,67 @@ void mostrarIntegrantes();
 int main() {
     //variable para el menu principal
     int opcion=0;
+    //bucle do-while para repetir el menu cuando no se seleccione una opcion del 1-9 
+    //switch para seleccionar alguna de las opciones del menu
+
+    do {
+        cout << "=====Bienvenido al sistema de biblioteca y prestamos===== " << endl;
+        cout << "Seleccione una opcion del menu del (1 al 9): " << endl;
+        cout << "1. Registrar Libro "<<endl;
+        cout << "2. Mostrar Inventario " <<endl;
+        cout << "3. Buscar Libro (Titulo o ID) " <<endl;
+        cout << "4. Registrar Usuario " <<endl;
+        cout << "5. Prestar Libro " <<endl;
+        cout << "6. Delvolver Libro " <<endl;
+        cout << "7. Mostrar Usuarios " <<endl;
+        cout << "8. Mostrar Integrantes "<<endl;
+        cout << "9. Salir del programa "<<endl;
+        cout <<" Ingrese su opcion: ";
+        cin >> opcion;
+
+        switch(opcion){
+
+            case 1:
+            registrarLibro();
+            break;
+
+            case 2:
+            mostrarInventario();
+            break;
+
+            case 3:
+            buscarLibro();
+            break;
+
+            case 4:
+            registrarUsuario();
+            break;
+
+            case 5:
+            prestarLibro();
+            break;
+
+            case 6:
+            devolverLibro();
+            break;
+
+            case 7:
+            mostrarUsuarios();
+            break;
+
+            case 8:
+            mostrarIntegrantes();
+            break;
+
+            case 9:
+            cout << "Salir del programa " <<endl;
+            break;
+
+            default:
+            cout << "opcion invalida, seleccione un valor del (1-9) " << endl;
+            break;
+        }
+    }while(opcion != 9);
 
     
     
