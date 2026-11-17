@@ -152,9 +152,9 @@ int iniciarSesion(usuario listaUsuarios[], int totalUsuarios) {
 }
 
 // Módulo de Registro de Usuarios
-void registrarUsuario() {
+void registrarUsuario(usuario listaUsuarios[], int &totalUsuarios, int max_usuarios ) {
     // if-else para controlar que no se exceda el límite de usuarios
-    if (totalUsuarios < MAX_USUARIOS) {
+    if (totalUsuarios < max_usuarios) {
         cout << "\n--- Registro de Nuevo Usuario ---" << endl;
         
         string carnetIngresado;
