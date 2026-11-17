@@ -194,38 +194,45 @@ void registrarUsuario(usuario listaUsuarios[], int &totalUsuarios, int max_usuar
 }
 
 //funcion para registrar libros utilizando if-else 
-void registrarLibro(){
-    if(totalLibros >= MAX_LIBROS){
+void registrarLibro(libro inventarioLibros[], int &totalLibros, int max_libros){
+    //verifica si se puede agregar otro libro
+    if(totalLibros >= max_libros){
         cout<<"El inventario esta completo" <<endl;
+
     }else{
         cout <<"=====Registro de nuevo libro====" <<endl;
         
-        cout <<"Ingrese el ID del libro: ";
-        cin>> inventarioLibros[totalLibros].ID;
         cin.ignore();
+    
         cout <<"Ingrese el Titulo del libro: ";
         getline(cin, inventarioLibros[totalLibros].Titulo); 
+
         cout <<"Ingrese el Autor del libro: ";
         getline(cin, inventarioLibros[totalLibros].autor);
+
         cout <<"Ingrese las unidades disponibles: ";
         cin >> inventarioLibros[totalLibros].unidades_disponible;
-        if(inventarioLibros[totalLibros].ID <=0){
-            cout << "fallo ID incorrecto" <<endl;
+
+        //validar los datos y asignar el ID
     
-        }else if (inventarioLibros[totalLibros].Titulo == ""){
+        if(inventarioLibros[totalLibros].Titulo == ""){
             cout <<"fallo titulo vacio" <<endl;
-            
         }else if (inventarioLibros[totalLibros].autor == ""){
             cout <<"fallo autor vacio" <<endl;
         }else if (inventarioLibros[totalLibros].unidades_disponible < 0){
             cout <<" fallo unidades incorrectas" <<endl;
         }else{
+            inventarioLibros[totalLibros].ID= totalLibros + 1;
+            cout <<"ID asignado: " << inventarioLibros[totalLibros].ID << endl;
+
             totalLibros++;
             cout <<"el Libro registrado correctamente" <<endl;
         }
         
     }
 }
+
+
 
 // Módulo de Préstamos y Devoluciones
 void prestarLibro(libro inventarioLibros[], int totalLibros) {
