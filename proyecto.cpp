@@ -2,9 +2,6 @@
 #include<string>
 using namespace std;
 
-// Límite máximo para nuestros arreglos
-const int MAX_USUARIOS = 100;
-const int MAX_LIBROS = 100;
 
 // structs fuera del main para que las funciones puedan usarlos globalmente
 struct libro{
@@ -17,6 +14,7 @@ struct usuario {
     string carnet;
     string nombre;
     string Facultad;
+    string contrasena;
 };
 struct prestamo{
     string carnet_usuario;
@@ -25,166 +23,139 @@ struct prestamo{
     bool activo;
 };
 
-// Arreglo y contador para el registro de usuarios (variables globales)
-usuario listaUsuarios[MAX_USUARIOS];
-int totalUsuarios = 0;
- libro inventarioLibros[MAX_LIBROS];
-    int totalLibros=0;
-
 // Declaración de funciones
-void registrarLibro();
-void mostrarInventario();
-void buscarLibro();
-void registrarUsuario();
-void prestarLibro();
-void devolverLibro();
-void mostrarUsuarios();
-void mostrarIntegrantes(); 
+void registrarLibro(libro inventarioLibros[], int &totalLibros, int max_libros);
+void mostrarInventario(); // Sergio le agregará sus parámetros luego
+void buscarLibro();       // Sergio le agregará sus parámetros luego
+void registrarUsuario(usuario listaUsuarios[], int &totalUsuarios, int max_usuarios);
+void prestarLibro(libro inventarioLibros[], int totalLibros);
+void devolverLibro(libro inventarioLibros[], int totalLibros);
+void mostrarUsuarios(usuario listaUsuarios[], int totalUsuarios);
+void mostrarIntegrantes();
+// Función para iniciar sesión
+int iniciarSesion(usuario listaUsuarios[], int totalUsuarios);
 
 int main() {
-    //variable para el menu principal
-    int opcion=0;
-    //bucle do-while para repetir el menu cuando no se seleccione una opcion del 1-9 
-    //switch para seleccionar alguna de las opciones del menu
+    int max_usuarios = 100;
+    int max_libros = 100;
 
-    do {
-        cout << "=====Bienvenido al sistema de biblioteca y prestamos===== " << endl;
-        cout << "Seleccione una opcion del menu del (1 al 9): " << endl;
-        cout << "1. Registrar Libro "<<endl;
-        cout << "2. Mostrar Inventario " <<endl;
-        cout << "3. Buscar Libro (Titulo o ID) " <<endl;
-        cout << "4. Registrar Usuario " <<endl;
-        cout << "5. Prestar Libro " <<endl;
-        cout << "6. Delvolver Libro " <<endl;
-        cout << "7. Mostrar Usuarios " <<endl;
-        cout << "8. Mostrar Integrantes "<<endl;
-        cout << "9. Salir del programa "<<endl;
-        cout <<" Ingrese su opcion: ";
-        cin >> opcion;
+    usuario listaUsuarios[100];
+    int totalUsuarios = 0;
 
-        switch(opcion){
+    libro inventarioLibros[100];
+    int totalLibros=0;
 
-            case 1:
-            registrarLibro();
-            break;
-
-            case 2:
-            mostrarInventario();
-            break;
-
-            case 3:
-            buscarLibro();
-            break;
-
-            case 4:
-            registrarUsuario();
-            break;
-
-            case 5:
-            prestarLibro();
-            break;
-
-            case 6:
-            devolverLibro();
-            break;
-
-            case 7:
-            mostrarUsuarios();
-            break;
-
-            case 8:
-            mostrarIntegrantes();
-            break;
-
-            case 9:
-            cout << "Salir del programa " <<endl;
-            break;
-
-            default:
-            cout << "opcion invalida, seleccione un valor del (1-9) " << endl;
-            break;
-        }
-    }while(opcion != 9);
-
-    return 0;
-}
-
-
-    //funcion para registrar libros utilizando if-else 
-    void registrarLibro(){
-        if(totalLibros >= MAX_LIBROS){
-
-            cout<<"El inventario esta completo" <<endl;
-
-        }else{
-
-            cout <<"=====Registro de nuevo libro====" <<endl;
-            
-            cout <<"Ingrese el ID del libro: ";
-            cin>> inventarioLibros[totalLibros].ID;
-            cin.ignore();
-
-            cout <<"Ingrese el Titulo del libro: ";
-            getline(cin, inventarioLibros[totalLibros].Titulo); 
-
-            cout <<"Ingrese el Autor del libro: ";
-            getline(cin, inventarioLibros[totalLibros].autor);
-
-            cout <<"Ingrese las unidades disponibles: ";
-            cin >> inventarioLibros[totalLibros].unidades_disponible;
-
-            if(inventarioLibros[totalLibros].ID <=0){
-                cout << "fallo ID incorrecto" <<endl;
-
+    bool sistemaActivo = true; // Variable maestra para mantener el programa encendido
+    
+    // Bucle principal del sistema
+    while (sistemaActivo) {
         
-
-            }else if (inventarioLibros[totalLibros].Titulo == ""){
-                cout <<"fallo titulo vacio" <<endl;
-                
-
-
-
-
-            }else if (inventarioLibros[totalLibros].autor == ""){
-                cout <<"fallo autor vacio" <<endl;
-
-            }else if (inventarioLibros[totalLibros].unidades_disponible < 0){
-                cout <<" fallo unidades incorrectas" <<endl;
-
-            }else{
-                totalLibros++;
-                cout <<"el Libro registrado correctamente" <<endl;
-
-            }
+        int rolActual = 0; // 0 = No logueado, 1 = Admin, 2 = Usuario normal
+        
+        // Bucle de Login
+        while (rolActual == 0) {
+            rolActual = iniciarSesion(listaUsuarios, totalUsuarios);
             
+            if (rolActual == 0) {
+                cout << "Error: Credenciales incorrectas. Intente nuevamente." << endl;
+            } else if (rolActual == -1) {
+                cout << "Apagando el sistema..." << endl;
+                sistemaActivo = false;
+                break; // Rompe el bucle de login
+            }
+        }
+    // Si se apaga el sistema desde el login, evitamos entrar al menú
+    if (!sistemaActivo) {
+        break; 
+    }
 
+    // Bucle del menú
+        int opcion = -1;
+    while (rolActual != 0 && sistemaActivo) {
+            cout << "\n=====Bienvenido al sistema de biblioteca y prestamos===== " << endl;
+            cout << "Rol actual: " << (rolActual == 1 ? "Administrador" : "Estudiante") << endl;
+            cout << "Seleccione una opcion del menu:" << endl;
+            cout << "1. Registrar Libro "<<endl;
+            cout << "2. Mostrar Inventario " <<endl;
+            cout << "3. Buscar Libro (Titulo o ID) " <<endl;
+            cout << "4. Registrar Usuario " <<endl;
+            cout << "5. Prestar Libro " <<endl;
+            cout << "6. Delvolver Libro " <<endl;
+            cout << "7. Mostrar Usuarios " <<endl;
+            cout << "8. Mostrar Integrantes "<<endl;
+            cout << "9. Cerrar Sesion (Volver al Login) "<<endl;
+            cout << "0. Salir del programa completamente "<<endl;
+            cout <<"Ingrese su opcion: ";
+            cin >> opcion;
 
-
-
+            switch(opcion){
+                case 1: registrarLibro(inventarioLibros, totalLibros, max_libros); break;
+                case 2: mostrarInventario(); break;
+                case 3: buscarLibro(); break;
+                case 4: registrarUsuario(listaUsuarios, totalUsuarios, max_usuarios); break;
+                case 5: prestarLibro(inventarioLibros, totalLibros); break;
+                case 6: devolverLibro(inventarioLibros, totalLibros); break;
+                case 7: mostrarUsuarios(listaUsuarios, totalUsuarios); break;
+                case 8: mostrarIntegrantes(); break;
+                case 9:
+                    cout << "Cerrando sesion..." <<endl;
+                    rolActual = 0; // Al ponerlo en 0, rompe este while interno y vuelve al login
+                    break;
+                case 0:
+                    cout << "Saliendo del programa..." << endl;
+                    sistemaActivo = false; // Rompe todos los bucles y apaga el programa
+                    break;
+                default:
+                    cout << "Opcion invalida. " << endl;
+                    break;
+            }
         }
     }
 
-    
-    // Sergio agregará aquí el bucle while y el switch principal
-    
-    
-
+    return 0;
+}
 /* ======================================================================
-   DECLARACIÓN DE USO DE IA 
+   DECLARACIÓN DE USO DE IA (Apoyo parcial)
    1. Herramienta utilizada: Gemini
-   2. Parte del proyecto: Módulo de Registro (registrarUsuario) y Búsquedas.
-   3. Fragmento apoyado: La lógica de usar una variable booleana ("bandera") 
-      dentro de un ciclo 'for' para detectar duplicados o encontrar IDs.
-   4. Modificaciones realizadas: Se adaptó el código generado para que 
-      utilice nuestros structs ('listaUsuarios' e 'inventarioLibros'), 
-      y se personalizaron los mensajes de salida (cout) según la rúbrica.
+   2. Parte del proyecto: Control de flujo general.
+   3. Fragmento apoyado: Lógica de bucles anidados con variable booleana 
+      ('sistemaActivo') para salir de forma limpia del programa.
+   4. Modificaciones realizadas: Se adaptaron las opciones del menú switch.
 ====================================================================== */
+// Módulo de Inicio de Sesión
+int iniciarSesion(usuario listaUsuarios[], int totalUsuarios) {
+    string user, pass;
+    cout << "\n=== INICIO DE SESION ===" << endl;
+    cout << "Usuario (Carnet, 'admin' o escriba 'salir' para apagar): ";
+    cin >> user;
+    
+    //validación para salir del programa
+    if (user == "salir" || user == "Salir" || user == "SALIR") {
+        return -1; //señal de apagado general
+    }
+    
+    cout << "Contraseña: ";
+    cin >> pass;
+
+    // Validación para el Administrador
+    if (user == "admin" && pass == "1234") {
+        return 1; //Rol Administrador
+    }
+
+    // Validación para los Estudiantes usando su contraseña real
+    for (int i = 0; i < totalUsuarios; i++) {
+        if (listaUsuarios[i].carnet == user && listaUsuarios[i].contrasena == pass) {
+            return 2; //Rol Usuario normal
+        }
+    }
+    return 0; //Credenciales incorrectas
+}
 
 // Módulo de Registro de Usuarios
 void registrarUsuario() {
     // if-else para controlar que no se exceda el límite de usuarios
     if (totalUsuarios < MAX_USUARIOS) {
-        cout << "\n--- Registro de Nuevo Estudiante ---" << endl;
+        cout << "\n--- Registro de Nuevo Usuario ---" << endl;
         
         string carnetIngresado;
         cout << "Ingrese el carnet (Ej. 00024026): ";
@@ -207,8 +178,12 @@ void registrarUsuario() {
             cout << "Ingrese el primer nombre: ";
             cin >> listaUsuarios[totalUsuarios].nombre;
             
-            cout << "Ingrese la facultad (Sin espacios): ";
-            cin >> listaUsuarios[totalUsuarios].Facultad;
+            // Limpia el salto de línea residual en el buffer de entrada
+            cin.ignore(); 
+            
+            cout << "Ingrese la facultad: ";
+            // Permite capturar la cadena completa con espacios
+            getline(cin, listaUsuarios[totalUsuarios].Facultad);
             
             totalUsuarios++;
             cout << "¡Usuario registrado exitosamente!" << endl;
@@ -218,8 +193,42 @@ void registrarUsuario() {
     }
 }
 
+//funcion para registrar libros utilizando if-else 
+void registrarLibro(){
+    if(totalLibros >= MAX_LIBROS){
+        cout<<"El inventario esta completo" <<endl;
+    }else{
+        cout <<"=====Registro de nuevo libro====" <<endl;
+        
+        cout <<"Ingrese el ID del libro: ";
+        cin>> inventarioLibros[totalLibros].ID;
+        cin.ignore();
+        cout <<"Ingrese el Titulo del libro: ";
+        getline(cin, inventarioLibros[totalLibros].Titulo); 
+        cout <<"Ingrese el Autor del libro: ";
+        getline(cin, inventarioLibros[totalLibros].autor);
+        cout <<"Ingrese las unidades disponibles: ";
+        cin >> inventarioLibros[totalLibros].unidades_disponible;
+        if(inventarioLibros[totalLibros].ID <=0){
+            cout << "fallo ID incorrecto" <<endl;
+    
+        }else if (inventarioLibros[totalLibros].Titulo == ""){
+            cout <<"fallo titulo vacio" <<endl;
+            
+        }else if (inventarioLibros[totalLibros].autor == ""){
+            cout <<"fallo autor vacio" <<endl;
+        }else if (inventarioLibros[totalLibros].unidades_disponible < 0){
+            cout <<" fallo unidades incorrectas" <<endl;
+        }else{
+            totalLibros++;
+            cout <<"el Libro registrado correctamente" <<endl;
+        }
+        
+    }
+}
+
 // Módulo de Préstamos y Devoluciones
-void prestarLibro() {
+void prestarLibro(libro inventarioLibros[], int totalLibros) {
     cout << "\n--- Modulo de Prestamos ---" << endl;
     int idBuscar;
     cout << "Ingrese el ID del libro que desea prestar: ";
@@ -227,28 +236,26 @@ void prestarLibro() {
 
     bool libroEncontrado = false;
     
-    // for para buscar el libro en el inventario
     for (int i = 0; i < totalLibros; i++) {
         if (inventarioLibros[i].ID == idBuscar) {
             libroEncontrado = true;
             
-            // if-else para verificar estrictamente si hay stock disponible antes de prestar
             if (inventarioLibros[i].unidades_disponible > 0) {
-                inventarioLibros[i].unidades_disponible--; // Descontamos 1 unidad del inventario
+                inventarioLibros[i].unidades_disponible--;
                 cout << "Prestamo realizado con exito. Disfrute su lectura." << endl;
             } else {
-                cout << "Error: No hay unidades disponibles para prestar de este libro en este momento." << endl;
+                cout << "Error: No hay unidades disponibles." << endl;
             }
         }
     }
 
     if (libroEncontrado == false) {
-        cout << "Error: El libro con el ID ingresado no existe." << endl;
+        cout << "Error: El libro no existe." << endl;
     }
 }
 
 // Módulo de Devoluciones
-void devolverLibro() {
+void devolverLibro(libro inventarioLibros[], int totalLibros) {
     cout << "\n--- Modulo de Devoluciones ---" << endl;
     string carnetEstudiante;
     cout << "Ingrese su carnet de estudiante: ";
@@ -278,7 +285,7 @@ void devolverLibro() {
 }
 
 // Función para listar los usuarios registrados
-void mostrarUsuarios() {
+void mostrarUsuarios(usuario listaUsuarios[], int totalUsuarios) {
     cout << "\n--- Listado de Estudiantes Registrados ---" << endl;
     if (totalUsuarios == 0) {
         cout << "No hay estudiantes registrados en el sistema actualmente." << endl;
