@@ -25,8 +25,8 @@ struct prestamo{
 
 // Declaración de funciones
 void registrarLibro(libro inventarioLibros[], int &totalLibros, int max_libros);
-void mostrarInventario(); // Sergio le agregará sus parámetros luego
-void buscarLibro();       // Sergio le agregará sus parámetros luego
+void mostrarInventario(libro inventarioLibros[], int totalLibros); // Sergio le agregará sus parámetros luego
+void buscarLibro(libro inventarioLibros[], int totalLibros);       // Sergio le agregará sus parámetros luego
 void registrarUsuario(usuario listaUsuarios[], int &totalUsuarios, int max_usuarios);
 void prestarLibro(libro inventarioLibros[], int totalLibros);
 void devolverLibro(libro inventarioLibros[], int totalLibros);
@@ -90,8 +90,8 @@ int main() {
 
             switch(opcion){
                 case 1: registrarLibro(inventarioLibros, totalLibros, max_libros); break;
-                case 2: mostrarInventario(); break;
-                case 3: buscarLibro(); break;
+                case 2: mostrarInventario(inventarioLibros, totalLibros); break;
+                case 3: buscarLibro(inventarioLibros, totalLibros); break;
                 case 4: registrarUsuario(listaUsuarios, totalUsuarios, max_usuarios); break;
                 case 5: prestarLibro(inventarioLibros, totalLibros); break;
                 case 6: devolverLibro(inventarioLibros, totalLibros); break;
@@ -227,10 +227,32 @@ void registrarLibro(libro inventarioLibros[], int &totalLibros, int max_libros){
 
             totalLibros++;
             cout <<"el Libro registrado correctamente" <<endl;
-        }
-        
+        }    
     }
 }
+//funcion para mostrar inventario
+void mostrarInventario(libro inventarioLibros[], int totalLibros){
+    // si hay libros registrados
+    if(totalLibros ==0){
+
+        cout<<"No hay libros registrados" <<endl;
+
+    }else{
+
+        cout<<"========inventario de libros=========" <<endl;
+
+        //mostrar los libros registrados
+        for(int i = 0; i <totalLibros; i++){
+            cout <<"ID" <<inventarioLibros[i].ID <<endl;
+            cout <<"Titulo" <<inventarioLibros[i].Titulo <<endl;
+            cout <<"autor" <<inventarioLibros[i]. autor <<endl;
+            cout <<"unidades" <<inventarioLibros[i]. unidades_disponible <<endl;
+        }
+    }
+}
+
+
+
 
 
 
