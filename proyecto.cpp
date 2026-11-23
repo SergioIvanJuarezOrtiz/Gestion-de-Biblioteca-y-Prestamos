@@ -18,10 +18,14 @@ struct usuario {
 };
 struct prestamo{
     string carnet_usuario;
-    string id_prestamo;
-    string id_libro;
+    int id_prestamo;
+    int id_libro;
     bool activo;
 };
+
+//variables globales para los prestamos
+prestamo prestamosActivos[100];
+int totalPrestamos = 0;
 
 // Declaración de funciones
 void registrarLibro(libro inventarioLibros[], int &totalLibros, int max_libros);
