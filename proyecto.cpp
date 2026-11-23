@@ -1,5 +1,6 @@
 #include<iostream>
 #include<string>
+#include<fstream>
 using namespace std;
 
 
@@ -11,16 +12,15 @@ struct libro{
     int unidades_disponible=0;
 };
 struct usuario {
-    string carnet;
+    int carnet;
     string nombre;
     string Facultad;
     string contrasena;
 };
 struct prestamo{
-    string carnet_usuario;
-    string id_prestamo;
-    string id_libro;
-    bool activo;
+    int id;
+    int carnet;
+    int libro;
 };
 
 // Declaración de funciones
@@ -32,8 +32,12 @@ void prestarLibro(libro inventarioLibros[], int totalLibros);
 void devolverLibro(libro inventarioLibros[], int totalLibros);
 void mostrarUsuarios(usuario listaUsuarios[], int totalUsuarios);
 void mostrarIntegrantes();
-// Función para iniciar sesión
 int iniciarSesion(usuario listaUsuarios[], int totalUsuarios);
+void cargarUsuarios(usuario listaUsuarios[], int &totalUsuarios, int max_usuarios);
+void guardarUsuarios(usuario listaUsuarios[], int totalUsuarios);
+void cargarLibros(libro inventarioLibros[], int &totalLibros, int max_libros);
+void guardarLibros(libro inventarioLibros[], int totalLibros);
+int leerEntero(string mensaje);
 
 int main() {
     int max_usuarios = 100;
@@ -44,6 +48,9 @@ int main() {
 
     libro inventarioLibros[100];
     int totalLibros=0;
+
+    cargarUsuarios(listaUsuarios, totalUsuarios, max_usuarios);
+    cargarLibros(inventarioLibros, totalLibros, max_libros);
 
     bool sistemaActivo = true; // Variable maestra para mantener el programa encendido
     
@@ -61,9 +68,7 @@ int main() {
             cout << "  2. Registrarse" << endl;
             cout << "  0. Salir del programa" << endl;
             cout << "----------------------------------------" << endl;
-            cout << "Opcion: ";
-            int opcionAcceso;
-            cin >> opcionAcceso;
+            int opcionAcceso = leerEntero("Opcion: ");
 
             if (opcionAcceso == 1) {
                 rolActual = iniciarSesion(listaUsuarios, totalUsuarios);
@@ -100,27 +105,57 @@ int main() {
                 cout << "Sesion: Estudiante" << endl;
             }
             cout << "----------------------------------------" << endl;
-            cout << "  1. Registrar libro" << endl;
-            cout << "  2. Mostrar inventario" << endl;
-            cout << "  3. Buscar libro (titulo o ID)" << endl;
-            cout << "  4. Registrar usuario" << endl;
-            cout << "  5. Prestar libro" << endl;
-            cout << "  6. Devolver libro" << endl;
-            cout << "  7. Mostrar usuarios" << endl;
-            cout << "  8. Mostrar integrantes" << endl;
+            if (rolActual == 1) {
+                cout << "  1. Registrar libro" << endl;
+                cout << "  2. Mostrar inventario" << endl;
+                cout << "  3. Buscar libro (titulo o ID)" << endl;
+                cout << "  4. Registrar usuario" << endl;
+                cout << "  5. Prestar libro" << endl;
+                cout << "  6. Devolver libro" << endl;
+                cout << "  7. Mostrar usuarios" << endl;
+                cout << "  8. Mostrar integrantes" << endl;
+            } else {
+                cout << "  3. Buscar libro (titulo o ID)" << endl;
+                cout << "  5. Prestar libro" << endl;
+                cout << "  6. Devolver libro" << endl;
+                cout << "  8. Mostrar integrantes" << endl;
+            }
             cout << "  9. Cerrar sesion (volver al acceso)" << endl;
             cout << "  0. Salir del programa" << endl;
             cout << "----------------------------------------" << endl;
-            cout << "Opcion: ";
-            cin >> opcion;
+            opcion = leerEntero("Opcion: ");
 
             switch(opcion){
-                case 1: registrarLibro(inventarioLibros, totalLibros, max_libros); break;
-                case 2: mostrarInventario(inventarioLibros, totalLibros); break;
-                case 4: registrarUsuario(listaUsuarios, totalUsuarios, max_usuarios); break;
+                case 1:
+                    if (rolActual == 1) {
+                        registrarLibro(inventarioLibros, totalLibros, max_libros);
+                    } else {
+                        cout << "Error: solo el administrador puede registrar libros." << endl;
+                    }
+                    break;
+                case 2:
+                    if (rolActual == 1) {
+                        mostrarInventario(inventarioLibros, totalLibros);
+                    } else {
+                        cout << "Error: solo el administrador puede ver el inventario." << endl;
+                    }
+                    break;
+                case 4:
+                    if (rolActual == 1) {
+                        registrarUsuario(listaUsuarios, totalUsuarios, max_usuarios);
+                    } else {
+                        cout << "Error: solo el administrador puede registrar usuarios." << endl;
+                    }
+                    break;
                 case 5: prestarLibro(inventarioLibros, totalLibros); break;
                 case 6: devolverLibro(inventarioLibros, totalLibros); break;
-                case 7: mostrarUsuarios(listaUsuarios, totalUsuarios); break;
+                case 7:
+                    if (rolActual == 1) {
+                        mostrarUsuarios(listaUsuarios, totalUsuarios);
+                    } else {
+                        cout << "Error: solo el administrador puede ver la lista de usuarios." << endl;
+                    }
+                    break;
                 case 8: mostrarIntegrantes(); break;
                 case 9:
                     cout << "Cerrando sesion..." <<endl;
@@ -150,34 +185,41 @@ int main() {
 // Módulo de Inicio de Sesión
 // Retorna: 1 admin, 2 estudiante, 0 error, -2 volver al menu de acceso
 int iniciarSesion(usuario listaUsuarios[], int totalUsuarios) {
-    string user, pass;
+    string pass;
+    int carnetLogin;
     cout << "\n========================================" << endl;
     cout << "           INICIO DE SESION" << endl;
     cout << "========================================" << endl;
     cout << "  0. Volver al menu de acceso" << endl;
+    cout << "  (admin: ingrese -1 como carnet)" << endl;
     cout << "----------------------------------------" << endl;
-    cout << "Carnet o usuario admin: ";
-    cin >> user;
+    carnetLogin = leerEntero("Carnet: ");
 
-    if (user == "0") {
+    if (carnetLogin == 0) {
         return -1;
+    }
+
+    if (carnetLogin == -1) {
+        string user;
+        cout << "Usuario admin: ";
+        cin >> user;
+        cout << "Contrasena: ";
+        cin >> pass;
+        if (user == "admin" && pass == "1234") {
+            return 1;
+        }
+        return 0;
     }
 
     cout << "Contrasena: ";
     cin >> pass;
 
-    // Validación para el Administrador
-    if (user == "admin" && pass == "1234") {
-        return 1; //Rol Administrador
-    }
-
-    // Validación para los Estudiantes usando su contraseña real
     for (int i = 0; i < totalUsuarios; i++) {
-        if (listaUsuarios[i].carnet == user && listaUsuarios[i].contrasena == pass) {
-            return 2; //Rol Usuario normal
+        if (listaUsuarios[i].carnet == carnetLogin && listaUsuarios[i].contrasena == pass) {
+            return 2;
         }
     }
-    return 0; //Credenciales incorrectas
+    return 0;
 }
 
 // Módulo de Registro de Usuarios
@@ -190,11 +232,9 @@ void registrarUsuario(usuario listaUsuarios[], int &totalUsuarios, int max_usuar
         cout << "  0. Volver al menu de acceso" << endl;
         cout << "----------------------------------------" << endl;
 
-        string carnetIngresado;
-        cout << "Carnet (ej. 00024026): ";
-        cin >> carnetIngresado;
+        int carnetIngresado = leerEntero("Carnet (ej. 24026, 0 cancelar): ");
 
-        if (carnetIngresado == "0") {
+        if (carnetIngresado == 0) {
             cout << "Registro cancelado." << endl;
             return;
         }
@@ -223,6 +263,7 @@ void registrarUsuario(usuario listaUsuarios[], int &totalUsuarios, int max_usuar
             cout << "Contrasena: ";
             cin >> listaUsuarios[totalUsuarios].contrasena;
             totalUsuarios++;
+            guardarUsuarios(listaUsuarios, totalUsuarios);
             cout << "¡Usuario registrado exitosamente!" << endl;
         }
     } else {
@@ -249,8 +290,8 @@ void registrarLibro(libro inventarioLibros[], int &totalLibros, int max_libros){
         cout <<"Ingrese el Autor del libro: ";
         getline(cin, inventarioLibros[totalLibros].autor);
 
-        cout <<"Ingrese las unidades disponibles: ";
-        cin >> inventarioLibros[totalLibros].unidades_disponible;
+        inventarioLibros[totalLibros].unidades_disponible =
+            leerEntero("Ingrese las unidades disponibles: ");
 
         //validar los datos y asignar el ID
     
@@ -265,6 +306,7 @@ void registrarLibro(libro inventarioLibros[], int &totalLibros, int max_libros){
             cout <<"ID asignado: " << inventarioLibros[totalLibros].ID << endl;
 
             totalLibros++;
+            guardarLibros(inventarioLibros, totalLibros);
             cout <<"el Libro registrado correctamente" <<endl;
         }    
     }
@@ -302,9 +344,7 @@ void prestarLibro(libro inventarioLibros[], int totalLibros) {
     cout << "\n========================================" << endl;
     cout << "            PRESTAMO DE LIBRO" << endl;
     cout << "========================================" << endl;
-    int idBuscar;
-    cout << "Ingrese el ID del libro que desea prestar: ";
-    cin >> idBuscar;
+    int idBuscar = leerEntero("Ingrese el ID del libro que desea prestar: ");
 
     bool libroEncontrado = false;
     
@@ -314,6 +354,7 @@ void prestarLibro(libro inventarioLibros[], int totalLibros) {
             
             if (inventarioLibros[i].unidades_disponible > 0) {
                 inventarioLibros[i].unidades_disponible--;
+                guardarLibros(inventarioLibros, totalLibros);
                 cout << "Prestamo realizado con exito. Disfrute su lectura." << endl;
             } else {
                 cout << "Error: No hay unidades disponibles." << endl;
@@ -331,13 +372,8 @@ void devolverLibro(libro inventarioLibros[], int totalLibros) {
     cout << "\n========================================" << endl;
     cout << "           DEVOLUCION DE LIBRO" << endl;
     cout << "========================================" << endl;
-    string carnetEstudiante;
-    cout << "Ingrese su carnet de estudiante: ";
-    cin >> carnetEstudiante;
-
-    int idDevolver;
-    cout << "Ingrese el ID del libro que desea devolver: ";
-    cin >> idDevolver;
+    int carnetEstudiante = leerEntero("Ingrese su carnet de estudiante: ");
+    int idDevolver = leerEntero("Ingrese el ID del libro que desea devolver: ");
 
     bool libroEncontrado = false;
 
@@ -346,8 +382,8 @@ void devolverLibro(libro inventarioLibros[], int totalLibros) {
         if (inventarioLibros[i].ID == idDevolver) {
             libroEncontrado = true;
             
-            // Reintegrar stock sumando 1 unidad
             inventarioLibros[i].unidades_disponible++;
+            guardarLibros(inventarioLibros, totalLibros);
             cout << "Gracias por su devolucion, estudiante " << carnetEstudiante << "." << endl;
             cout << "Libro reintegrado al inventario con exito." << endl;
         }
@@ -383,6 +419,109 @@ void mostrarIntegrantes() {
     cout << "1. Sergio Ivan Juarez Ortiz - 00011826" << endl;
     cout << "2. Christhian Eduardo Sanchez Lopez - 00024026" << endl;
     cout << "========================================" << endl;
+}
+
+// Pide un entero y vuelve a preguntar si escriben texto
+int leerEntero(string mensaje) {
+    int valor;
+    bool entradaValida = false;
+
+    while (entradaValida == false) {
+        cout << mensaje;
+        cin >> valor;
+
+        if (cin.fail()) {
+            cout << "Error: debe ingresar solo numeros. Intente de nuevo." << endl;
+            cin.clear();
+            cin.ignore(1000, '\n');
+        } else {
+            entradaValida = true;
+        }
+    }
+
+    return valor;
+}
+
+// Persistencia en archivos de texto
+void cargarUsuarios(usuario listaUsuarios[], int &totalUsuarios, int max_usuarios) {
+    ifstream archivo("usuarios.txt");
+    if (archivo.is_open() == false) {
+        totalUsuarios = 0;
+        return;
+    }
+
+    archivo >> totalUsuarios;
+    if (totalUsuarios > max_usuarios) {
+        totalUsuarios = max_usuarios;
+    }
+
+    archivo.ignore();
+    for (int i = 0; i < totalUsuarios; i++) {
+        archivo >> listaUsuarios[i].carnet;
+        archivo.ignore();
+        getline(archivo, listaUsuarios[i].nombre);
+        getline(archivo, listaUsuarios[i].Facultad);
+        getline(archivo, listaUsuarios[i].contrasena);
+    }
+    archivo.close();
+}
+
+void guardarUsuarios(usuario listaUsuarios[], int totalUsuarios) {
+    ofstream archivo("usuarios.txt");
+    if (archivo.is_open() == false) {
+        cout << "Error: no se pudo guardar el archivo de usuarios." << endl;
+        return;
+    }
+
+    archivo << totalUsuarios << endl;
+    for (int i = 0; i < totalUsuarios; i++) {
+        archivo << listaUsuarios[i].carnet << endl;
+        archivo << listaUsuarios[i].nombre << endl;
+        archivo << listaUsuarios[i].Facultad << endl;
+        archivo << listaUsuarios[i].contrasena << endl;
+    }
+    archivo.close();
+}
+
+void cargarLibros(libro inventarioLibros[], int &totalLibros, int max_libros) {
+    ifstream archivo("libros.txt");
+    if (archivo.is_open() == false) {
+        totalLibros = 0;
+        return;
+    }
+
+    archivo >> totalLibros;
+    if (totalLibros > max_libros) {
+        totalLibros = max_libros;
+    }
+
+    archivo.ignore();
+    for (int i = 0; i < totalLibros; i++) {
+        archivo >> inventarioLibros[i].ID;
+        archivo.ignore();
+        getline(archivo, inventarioLibros[i].Titulo);
+        getline(archivo, inventarioLibros[i].autor);
+        archivo >> inventarioLibros[i].unidades_disponible;
+        archivo.ignore();
+    }
+    archivo.close();
+}
+
+void guardarLibros(libro inventarioLibros[], int totalLibros) {
+    ofstream archivo("libros.txt");
+    if (archivo.is_open() == false) {
+        cout << "Error: no se pudo guardar el archivo de libros." << endl;
+        return;
+    }
+
+    archivo << totalLibros << endl;
+    for (int i = 0; i < totalLibros; i++) {
+        archivo << inventarioLibros[i].ID << endl;
+        archivo << inventarioLibros[i].Titulo << endl;
+        archivo << inventarioLibros[i].autor << endl;
+        archivo << inventarioLibros[i].unidades_disponible << endl;
+    }
+    archivo.close();
 }
 
 
