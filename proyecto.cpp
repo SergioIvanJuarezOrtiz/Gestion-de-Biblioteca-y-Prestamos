@@ -54,23 +54,24 @@ int main() {
         
         // Bucle de Login: elegir iniciar sesion o registrarse
         while (rolActual == 0) {
-            cout << "\n===== Acceso al sistema =====" << endl;
-            cout << "1. Iniciar sesion" << endl;
-            cout << "2. Registrarse" << endl;
-            cout << "0. Salir del programa" << endl;
-            cout << "Ingrese su opcion: ";
+            cout << "\n========================================" << endl;
+            cout << "     BIBLIOTECA - ACCESO AL SISTEMA" << endl;
+            cout << "========================================" << endl;
+            cout << "  1. Iniciar sesion" << endl;
+            cout << "  2. Registrarse" << endl;
+            cout << "  0. Salir del programa" << endl;
+            cout << "----------------------------------------" << endl;
+            cout << "Opcion: ";
             int opcionAcceso;
             cin >> opcionAcceso;
 
             if (opcionAcceso == 1) {
                 rolActual = iniciarSesion(listaUsuarios, totalUsuarios);
 
-                if (rolActual == 0) {
+                if (rolActual == -1) {
+                    rolActual = 0;
+                } else if (rolActual == 0) {
                     cout << "Error: Credenciales incorrectas. Intente nuevamente." << endl;
-                } else if (rolActual == -1) {
-                    cout << "Apagando el sistema..." << endl;
-                    sistemaActivo = false;
-                    break;
                 }
             } else if (opcionAcceso == 2) {
                 registrarUsuario(listaUsuarios, totalUsuarios, max_usuarios);
@@ -90,20 +91,27 @@ int main() {
     // Bucle del menú
         int opcion = -1;
     while (rolActual != 0 && sistemaActivo) {
-            cout << "\n=====Bienvenido al sistema de biblioteca y prestamos===== " << endl;
-            cout << "Rol actual: " << (rolActual == 1 ? "Administrador" : "Estudiante") << endl;
-            cout << "Seleccione una opcion del menu:" << endl;
-            cout << "1. Registrar Libro "<<endl;
-            cout << "2. Mostrar Inventario " <<endl;
-            cout << "3. Buscar Libro (Titulo o ID) " <<endl;
-            cout << "4. Registrar Usuario " <<endl;
-            cout << "5. Prestar Libro " <<endl;
-            cout << "6. Delvolver Libro " <<endl;
-            cout << "7. Mostrar Usuarios " <<endl;
-            cout << "8. Mostrar Integrantes "<<endl;
-            cout << "9. Cerrar Sesion (Volver al Login) "<<endl;
-            cout << "0. Salir del programa completamente "<<endl;
-            cout <<"Ingrese su opcion: ";
+            cout << "\n========================================" << endl;
+            cout << "  SISTEMA DE BIBLIOTECA Y PRESTAMOS" << endl;
+            cout << "========================================" << endl;
+            if (rolActual == 1) {
+                cout << "Sesion: Administrador" << endl;
+            } else {
+                cout << "Sesion: Estudiante" << endl;
+            }
+            cout << "----------------------------------------" << endl;
+            cout << "  1. Registrar libro" << endl;
+            cout << "  2. Mostrar inventario" << endl;
+            cout << "  3. Buscar libro (titulo o ID)" << endl;
+            cout << "  4. Registrar usuario" << endl;
+            cout << "  5. Prestar libro" << endl;
+            cout << "  6. Devolver libro" << endl;
+            cout << "  7. Mostrar usuarios" << endl;
+            cout << "  8. Mostrar integrantes" << endl;
+            cout << "  9. Cerrar sesion (volver al acceso)" << endl;
+            cout << "  0. Salir del programa" << endl;
+            cout << "----------------------------------------" << endl;
+            cout << "Opcion: ";
             cin >> opcion;
 
             switch(opcion){
@@ -140,18 +148,22 @@ int main() {
    4. Modificaciones realizadas: Se adaptaron las opciones del menú switch.
 ====================================================================== */
 // Módulo de Inicio de Sesión
+// Retorna: 1 admin, 2 estudiante, 0 error, -2 volver al menu de acceso
 int iniciarSesion(usuario listaUsuarios[], int totalUsuarios) {
     string user, pass;
-    cout << "\n=== INICIO DE SESION ===" << endl;
-    cout << "Usuario (Carnet, 'admin' o escriba 'salir' para apagar): ";
+    cout << "\n========================================" << endl;
+    cout << "           INICIO DE SESION" << endl;
+    cout << "========================================" << endl;
+    cout << "  0. Volver al menu de acceso" << endl;
+    cout << "----------------------------------------" << endl;
+    cout << "Carnet o usuario admin: ";
     cin >> user;
-    
-    //validación para salir del programa
-    if (user == "salir" || user == "Salir" || user == "SALIR") {
-        return -1; //señal de apagado general
+
+    if (user == "0") {
+        return -1;
     }
-    
-    cout << "Contraseña: ";
+
+    cout << "Contrasena: ";
     cin >> pass;
 
     // Validación para el Administrador
@@ -172,11 +184,20 @@ int iniciarSesion(usuario listaUsuarios[], int totalUsuarios) {
 void registrarUsuario(usuario listaUsuarios[], int &totalUsuarios, int max_usuarios ) {
     // if-else para controlar que no se exceda el límite de usuarios
     if (totalUsuarios < max_usuarios) {
-        cout << "\n--- Registro de Nuevo Usuario ---" << endl;
-        
+        cout << "\n========================================" << endl;
+        cout << "         REGISTRO DE USUARIO" << endl;
+        cout << "========================================" << endl;
+        cout << "  0. Volver al menu de acceso" << endl;
+        cout << "----------------------------------------" << endl;
+
         string carnetIngresado;
-        cout << "Ingrese el carnet (Ej. 00024026): ";
+        cout << "Carnet (ej. 00024026): ";
         cin >> carnetIngresado;
+
+        if (carnetIngresado == "0") {
+            cout << "Registro cancelado." << endl;
+            return;
+        }
 
         // Control de duplicados usando lógica de bandera booleana
         bool duplicado = false;
@@ -192,16 +213,14 @@ void registrarUsuario(usuario listaUsuarios[], int &totalUsuarios, int max_usuar
         } else {
             listaUsuarios[totalUsuarios].carnet = carnetIngresado;
 
-            cout << "Ingrese el primer nombre: ";
+            cout << "Primer nombre: ";
             cin >> listaUsuarios[totalUsuarios].nombre;
-            
-            // Limpia el salto de línea residual en el buffer de entrada
-            cin.ignore(); 
-            
-            cout << "Ingrese la facultad: ";
-            // Permite capturar la cadena completa con espacios
+
+            cin.ignore();
+
+            cout << "Facultad: ";
             getline(cin, listaUsuarios[totalUsuarios].Facultad);
-            cout << "Cree una contrasena: ";
+            cout << "Contrasena: ";
             cin >> listaUsuarios[totalUsuarios].contrasena;
             totalUsuarios++;
             cout << "¡Usuario registrado exitosamente!" << endl;
@@ -218,7 +237,9 @@ void registrarLibro(libro inventarioLibros[], int &totalLibros, int max_libros){
         cout<<"El inventario esta completo" <<endl;
 
     }else{
-        cout <<"=====Registro de nuevo libro====" <<endl;
+        cout << "\n========================================" << endl;
+        cout << "         REGISTRO DE LIBRO" << endl;
+        cout << "========================================" << endl;
         
         cin.ignore();
     
@@ -257,14 +278,16 @@ void mostrarInventario(libro inventarioLibros[], int totalLibros){
 
     }else{
 
-        cout<<"========inventario de libros=========" <<endl;
+        cout << "\n========================================" << endl;
+        cout << "           INVENTARIO DE LIBROS" << endl;
+        cout << "========================================" << endl;
 
-        //mostrar los libros registrados
         for(int i = 0; i <totalLibros; i++){
-            cout <<"ID" <<inventarioLibros[i].ID <<endl;
-            cout <<"Titulo" <<inventarioLibros[i].Titulo <<endl;
-            cout <<"autor" <<inventarioLibros[i]. autor <<endl;
-            cout <<"unidades" <<inventarioLibros[i]. unidades_disponible <<endl;
+            cout << "----------------------------------------" << endl;
+            cout << "ID: " << inventarioLibros[i].ID << endl;
+            cout << "Titulo: " << inventarioLibros[i].Titulo << endl;
+            cout << "Autor: " << inventarioLibros[i].autor << endl;
+            cout << "Unidades: " << inventarioLibros[i].unidades_disponible << endl;
         }
     }
 }
@@ -276,7 +299,9 @@ void mostrarInventario(libro inventarioLibros[], int totalLibros){
 
 // Módulo de Préstamos y Devoluciones
 void prestarLibro(libro inventarioLibros[], int totalLibros) {
-    cout << "\n--- Modulo de Prestamos ---" << endl;
+    cout << "\n========================================" << endl;
+    cout << "            PRESTAMO DE LIBRO" << endl;
+    cout << "========================================" << endl;
     int idBuscar;
     cout << "Ingrese el ID del libro que desea prestar: ";
     cin >> idBuscar;
@@ -303,7 +328,9 @@ void prestarLibro(libro inventarioLibros[], int totalLibros) {
 
 // Módulo de Devoluciones
 void devolverLibro(libro inventarioLibros[], int totalLibros) {
-    cout << "\n--- Modulo de Devoluciones ---" << endl;
+    cout << "\n========================================" << endl;
+    cout << "           DEVOLUCION DE LIBRO" << endl;
+    cout << "========================================" << endl;
     string carnetEstudiante;
     cout << "Ingrese su carnet de estudiante: ";
     cin >> carnetEstudiante;
@@ -333,7 +360,9 @@ void devolverLibro(libro inventarioLibros[], int totalLibros) {
 
 // Función para listar los usuarios registrados
 void mostrarUsuarios(usuario listaUsuarios[], int totalUsuarios) {
-    cout << "\n--- Listado de Estudiantes Registrados ---" << endl;
+    cout << "\n========================================" << endl;
+    cout << "      ESTUDIANTES REGISTRADOS" << endl;
+    cout << "========================================" << endl;
     if (totalUsuarios == 0) {
         cout << "No hay estudiantes registrados en el sistema actualmente." << endl;
     } else {
@@ -343,17 +372,17 @@ void mostrarUsuarios(usuario listaUsuarios[], int totalUsuarios) {
                  << " | Facultad: " << listaUsuarios[i].Facultad << endl;
         }
     }
-    cout << "------------------------------------------" << endl;
+    cout << "----------------------------------------" << endl;
 }
 
 // Función para mostrar los integrantes del proyecto
 void mostrarIntegrantes() {
-    cout << "\n==========================================" << endl;
+    cout << "\n========================================" << endl;
     cout << "       INTEGRANTES DEL PROYECTO" << endl;
-    cout << "==========================================" << endl;
+    cout << "========================================" << endl;
     cout << "1. Sergio Ivan Juarez Ortiz - 00011826" << endl;
     cout << "2. Christhian Eduardo Sanchez Lopez - 00024026" << endl;
-    cout << "==========================================" << endl;
+    cout << "========================================" << endl;
 }
 
 
