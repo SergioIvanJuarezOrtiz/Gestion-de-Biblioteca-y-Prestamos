@@ -26,7 +26,7 @@ struct prestamo{
 // Declaración de funciones
 void registrarLibro(libro inventarioLibros[], int &totalLibros, int max_libros);
 void mostrarInventario(libro inventarioLibros[], int totalLibros); // Sergio le agregará sus parámetros luego
-void buscarLibro(libro inventarioLibros[], int totalLibros);       // Sergio le agregará sus parámetros luego
+     // Sergio le agregará sus parámetros luego
 void registrarUsuario(usuario listaUsuarios[], int &totalUsuarios, int max_usuarios);
 void prestarLibro(libro inventarioLibros[], int totalLibros);
 void devolverLibro(libro inventarioLibros[], int totalLibros);
@@ -52,16 +52,34 @@ int main() {
         
         int rolActual = 0; // 0 = No logueado, 1 = Admin, 2 = Usuario normal
         
-        // Bucle de Login
+        // Bucle de Login: elegir iniciar sesion o registrarse
         while (rolActual == 0) {
-            rolActual = iniciarSesion(listaUsuarios, totalUsuarios);
-            
-            if (rolActual == 0) {
-                cout << "Error: Credenciales incorrectas. Intente nuevamente." << endl;
-            } else if (rolActual == -1) {
+            cout << "\n===== Acceso al sistema =====" << endl;
+            cout << "1. Iniciar sesion" << endl;
+            cout << "2. Registrarse" << endl;
+            cout << "0. Salir del programa" << endl;
+            cout << "Ingrese su opcion: ";
+            int opcionAcceso;
+            cin >> opcionAcceso;
+
+            if (opcionAcceso == 1) {
+                rolActual = iniciarSesion(listaUsuarios, totalUsuarios);
+
+                if (rolActual == 0) {
+                    cout << "Error: Credenciales incorrectas. Intente nuevamente." << endl;
+                } else if (rolActual == -1) {
+                    cout << "Apagando el sistema..." << endl;
+                    sistemaActivo = false;
+                    break;
+                }
+            } else if (opcionAcceso == 2) {
+                registrarUsuario(listaUsuarios, totalUsuarios, max_usuarios);
+            } else if (opcionAcceso == 0) {
                 cout << "Apagando el sistema..." << endl;
                 sistemaActivo = false;
-                break; // Rompe el bucle de login
+                break;
+            } else {
+                cout << "Opcion invalida. Intente nuevamente." << endl;
             }
         }
     // Si se apaga el sistema desde el login, evitamos entrar al menú
@@ -91,7 +109,6 @@ int main() {
             switch(opcion){
                 case 1: registrarLibro(inventarioLibros, totalLibros, max_libros); break;
                 case 2: mostrarInventario(inventarioLibros, totalLibros); break;
-                case 3: buscarLibro(inventarioLibros, totalLibros); break;
                 case 4: registrarUsuario(listaUsuarios, totalUsuarios, max_usuarios); break;
                 case 5: prestarLibro(inventarioLibros, totalLibros); break;
                 case 6: devolverLibro(inventarioLibros, totalLibros); break;
@@ -184,7 +201,8 @@ void registrarUsuario(usuario listaUsuarios[], int &totalUsuarios, int max_usuar
             cout << "Ingrese la facultad: ";
             // Permite capturar la cadena completa con espacios
             getline(cin, listaUsuarios[totalUsuarios].Facultad);
-            
+            cout << "Cree una contrasena: ";
+            cin >> listaUsuarios[totalUsuarios].contrasena;
             totalUsuarios++;
             cout << "¡Usuario registrado exitosamente!" << endl;
         }
