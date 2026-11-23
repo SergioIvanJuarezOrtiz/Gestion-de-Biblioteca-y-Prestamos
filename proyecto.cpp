@@ -25,8 +25,8 @@ struct prestamo{
 
 // Declaración de funciones
 void registrarLibro(libro inventarioLibros[], int &totalLibros, int max_libros);
-void mostrarInventario(libro inventarioLibros[], int totalLibros); // Sergio le agregará sus parámetros luego
-void buscarLibro(libro inventarioLibros[], int totalLibros);       // Sergio le agregará sus parámetros luego
+void mostrarInventario(libro inventarioLibros[], int totalLibros); 
+void buscarLibro(libro inventarioLibros[], int totalLibros);       
 void registrarUsuario(usuario listaUsuarios[], int &totalUsuarios, int max_usuarios);
 void prestarLibro(libro inventarioLibros[], int totalLibros);
 void devolverLibro(libro inventarioLibros[], int totalLibros);
@@ -232,7 +232,7 @@ void registrarLibro(libro inventarioLibros[], int &totalLibros, int max_libros){
 }
 //funcion para mostrar inventario
 void mostrarInventario(libro inventarioLibros[], int totalLibros){
-    // si hay libros registrados
+    // verificar si no hay libros registrados
     if(totalLibros ==0){
 
         cout<<"No hay libros registrados" <<endl;
@@ -243,11 +243,103 @@ void mostrarInventario(libro inventarioLibros[], int totalLibros){
 
         //mostrar los libros registrados
         for(int i = 0; i <totalLibros; i++){
-            cout <<"ID" <<inventarioLibros[i].ID <<endl;
-            cout <<"Titulo" <<inventarioLibros[i].Titulo <<endl;
-            cout <<"autor" <<inventarioLibros[i]. autor <<endl;
-            cout <<"unidades" <<inventarioLibros[i]. unidades_disponible <<endl;
+            cout <<"ID: " <<inventarioLibros[i].ID <<endl;
+            cout <<"Titulo: " <<inventarioLibros[i].Titulo <<endl;
+            cout <<"autor: " <<inventarioLibros[i]. autor <<endl;
+            cout <<"unidades: " <<inventarioLibros[i]. unidades_disponible <<endl;
         }
+    }
+}
+//funcion para buscar libro
+void buscarLibro(libro inventarioLibros[],int totalLibros){
+
+    int opcion;
+    int idBusqueda;
+    string tituloBuscar;
+    bool encontrado = false;
+
+    //verificar si hay libros registrados
+    if(totalLibros ==0){
+        cout << "No hay libros registrados" <<endl;
+        return;
+    }
+
+    cout << "====== Buscar libro =======" << endl;
+    cout << "1. Buscar por ID" << endl;
+    cout << "2. Buscar por Titulo" << endl;
+    cout <<" ingrese una opcion: ";
+    cin >> opcion;
+
+    //verificar si se ingreso un numero
+
+    if(cin.fail()){           //si ocurrio error al introducir numero
+        cin.clear();         //limpia estado de error
+        cin.ignore(1000, '\n');
+        cout << "Error: ingrese un numero" <<endl;
+        return;
+    }
+
+    if(opcion ==1){
+
+        cout <<"Ingrese el ID del libro: ";
+        cin >>idBusqueda;
+
+        //verificar si se ingreso un numero
+        if(cin.fail()){
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Error: ingrese un numero"<<endl;
+            return;
+        }
+
+    
+        // buscar por ID
+        for(int i=0; i < totalLibros; i++){
+
+            if(inventarioLibros[i].ID == idBusqueda){
+
+                cout <<"Libro encontrado " <<endl;
+                cout <<"ID : " << inventarioLibros[i].ID <<endl;
+                cout <<"Titulo :  "<< inventarioLibros[i].Titulo <<endl;
+                cout <<"Autor : " << inventarioLibros[i].autor << endl;
+                cout <<"Unidades: " <<inventarioLibros[i].unidades_disponible << endl;
+
+                encontrado = true;
+                break;
+            }
+    }
+    if(encontrado == false){
+        cout<<"Libro no encontrado" <<endl;
+
+    }
+    }else if(opcion ==2){
+        cin.ignore(1000, '\n');
+
+        cout<<"Ingrese el titulo del libro: ";
+        getline(cin, tituloBuscar);
+
+        //busca por titulo
+        for(int i = 0; i<totalLibros; i++){
+
+            if(inventarioLibros[i].Titulo == tituloBuscar){
+
+                cout <<"Libro encontrado" <<endl;
+                cout <<"ID: " << inventarioLibros[i].ID << endl;
+                cout <<"Titulo: " << inventarioLibros[i].Titulo <<endl;
+                cout <<"Autor: " << inventarioLibros[i].autor <<endl;
+                cout << "Unidades: " << inventarioLibros[i].unidades_disponible <<   endl;
+
+                encontrado = true;
+            }
+        }
+        if(encontrado == false){
+
+            cout <<"Libro no encontrado" << endl;
+
+        }
+
+    } else{
+        cout << " Opcion incorrecta" <<endl;
     }
 }
 
