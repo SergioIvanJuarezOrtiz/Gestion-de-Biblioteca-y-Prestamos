@@ -1,5 +1,9 @@
-1
-24026
+2
+00024026
 Eduardo
 Ingenieria informatica
+1234
+00011826
+Sergio
+Ingenieria Informatica
 1234
