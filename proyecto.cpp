@@ -34,6 +34,7 @@ void buscarLibro(libro inventarioLibros[], int totalLibros);
 void registrarUsuario(usuario listaUsuarios[], int &totalUsuarios, int max_usuarios);
 void prestarLibro(libro inventarioLibros[], int totalLibros, prestamo prestamosActivos[],int &totalPrestamos);
 void devolverLibro(libro inventarioLibros[], int totalLibros, prestamo PrestamosActivos[], int totalPrestamos);
+void reportePrestamos(prestamo prestamoActivos[], int totalPrestamos);
 void mostrarUsuarios(usuario listaUsuarios[], int totalUsuarios);
 void mostrarIntegrantes();
 int iniciarSesion(usuario listaUsuarios[], int totalUsuarios);
@@ -121,6 +122,7 @@ int main() {
                 cout << "  6. Devolver libro" << endl;
                 cout << "  7. Mostrar usuarios" << endl;
                 cout << "  8. Mostrar integrantes" << endl;
+                cout << " 10. Reporte de prestamos" << endl;
             } else {
                 cout << "  3. Buscar libro (titulo o ID)" << endl;
                 cout << "  5. Prestar libro" << endl;
@@ -168,6 +170,13 @@ int main() {
                     cout << "Cerrando sesion..." <<endl;
                     rolActual = 0; // Al ponerlo en 0, rompe este while interno y vuelve al login
                     break;
+                case 10:
+                if(rolActual == 1){
+                    reportePrestamos(prestamosActivos, totalPrestamos);
+                }else{
+                    cout <<"Error: solo administrador puede ver los reportes." <<endl;
+                }
+                break;
                 case 0:
                     cout << "Saliendo del programa..." << endl;
                     sistemaActivo = false; // Rompe todos los bucles y apaga el programa
@@ -522,13 +531,42 @@ void devolverLibro(libro inventarioLibros[], int totalLibros, prestamo prestamos
             }
             if(prestamoEncontrado == false){
                 cout <<"Error: no existe un prestamo activo para este estudiante" <<endl;
-                break;
+                
             }
+            break;
         }
     }
 
     if (libroEncontrado == false) {
         cout << "Error: El ID ingresado no corresponde a ningun libro de nuestra biblioteca." << endl;
+    }
+}
+// funcion para mostrar el reporte de prestamos
+void reportePrestamos(prestamo prestamosActivos[], int totalPrestamos){
+
+    cout <<" ======Reporte de prestamos =========" << endl;
+
+    // verifica si hay prestamos registrados    
+    if(totalPrestamos ==0){
+        cout <<"No hay prestamos registrados"   <<endl;
+
+    }else{
+
+        //mostrar parametros registrados
+        for(int i = 0; i < totalPrestamos; i++){
+            cout <<"ID del prestamo: " <<prestamosActivos[i].id <<endl;
+            cout << "Carnet: " <<prestamosActivos[i].libro <<endl;
+            cout <<"ID del libro: " <<prestamosActivos[i].libro <<endl;
+
+            // verifica el estado del prestamo  
+            if(prestamosActivos[i].activo == true){
+                cout <<"Estado: prestado" <<endl;
+            }else{
+                cout <<"Estado: devuelto" <<endl;
+            }
+            cout << "-------------------------------" <<endl;
+            
+        }
     }
 }
 
