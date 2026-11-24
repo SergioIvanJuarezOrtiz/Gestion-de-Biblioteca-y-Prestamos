@@ -21,19 +21,19 @@ struct prestamo{
     int id;
     int carnet;
     int libro;
+    bool activo;
 };
 
-//variables globales para los prestamos
-prestamo prestamosActivos[100];
-int totalPrestamos = 0;
+
+
 
 // Declaración de funciones
 void registrarLibro(libro inventarioLibros[], int &totalLibros, int max_libros);
 void mostrarInventario(libro inventarioLibros[], int totalLibros);
 void buscarLibro(libro inventarioLibros[], int totalLibros);
 void registrarUsuario(usuario listaUsuarios[], int &totalUsuarios, int max_usuarios);
-void prestarLibro(libro inventarioLibros[], int totalLibros);
-void devolverLibro(libro inventarioLibros[], int totalLibros);
+void prestarLibro(libro inventarioLibros[], int totalLibros, prestamo prestamosActivos[],int &totalPrestamos);
+void devolverLibro(libro inventarioLibros[], int totalLibros, prestamo PrestamosActivos[], int totalPrestamos);
 void mostrarUsuarios(usuario listaUsuarios[], int totalUsuarios);
 void mostrarIntegrantes();
 int iniciarSesion(usuario listaUsuarios[], int totalUsuarios);
@@ -52,6 +52,9 @@ int main() {
 
     libro inventarioLibros[100];
     int totalLibros=0;
+    
+    prestamo prestamosActivos[100];
+    int totalPrestamos = 0;
 
     cargarUsuarios(listaUsuarios, totalUsuarios, max_usuarios);
     cargarLibros(inventarioLibros, totalLibros, max_libros);
@@ -151,8 +154,8 @@ int main() {
                         cout << "Error: solo el administrador puede registrar usuarios." << endl;
                     }
                     break;
-                case 5: prestarLibro(inventarioLibros, totalLibros); break;
-                case 6: devolverLibro(inventarioLibros, totalLibros); break;
+                case 5: prestarLibro(inventarioLibros, totalLibros, prestamosActivos, totalPrestamos); break;
+                case 6: devolverLibro(inventarioLibros, totalLibros, prestamosActivos, totalPrestamos); break;
                 case 7:
                     if (rolActual == 1) {
                         mostrarUsuarios(listaUsuarios, totalUsuarios);
@@ -436,7 +439,7 @@ void buscarLibro(libro inventarioLibros[],int totalLibros){
 
 
 // Módulo de Préstamos y Devoluciones
-void prestarLibro(libro inventarioLibros[], int totalLibros) {
+void prestarLibro(libro inventarioLibros[], int totalLibros, prestamo prestamosActivos[], int&totalPrestamos) {
     cout << "\n========================================" << endl;
     cout << "            PRESTAMO DE LIBRO" << endl;
     cout << "========================================" << endl;
@@ -449,12 +452,32 @@ void prestarLibro(libro inventarioLibros[], int totalLibros) {
             libroEncontrado = true;
             
             if (inventarioLibros[i].unidades_disponible > 0) {
-                inventarioLibros[i].unidades_disponible--;
-                guardarLibros(inventarioLibros, totalLibros);
-                cout << "Prestamo realizado con exito. Disfrute su lectura." << endl;
+
+                //verifica si hay espacio para otro prestamo
+                if (totalPrestamos < 100){
+                    int carnetEstudiante = leerEntero("Ingrese su carnet de estudiante:");
+
+                    //guarda prestamo en el arreglo
+                    prestamosActivos[totalPrestamos].id = totalPrestamos +1;
+                    prestamosActivos[totalPrestamos].carnet = carnetEstudiante;
+                    prestamosActivos[totalPrestamos].libro = idBuscar;
+                    prestamosActivos[totalPrestamos].activo = true;
+
+                    totalPrestamos++;
+                    //restar  una unidad del libro
+                    inventarioLibros[i].unidades_disponible--;
+                    guardarLibros(inventarioLibros, totalLibros);
+
+                   cout << "Prestamo realizado con exito. Disfrute su lectura." << endl;
+                    
+                }else{
+                    cout <<"error: El historial de prestamos esta lleno" <<endl;
+                }
+                
             } else {
                 cout << "Error: No hay unidades disponibles." << endl;
             }
+            break;
         }
     }
 
@@ -464,7 +487,7 @@ void prestarLibro(libro inventarioLibros[], int totalLibros) {
 }
 
 // Módulo de Devoluciones
-void devolverLibro(libro inventarioLibros[], int totalLibros) {
+void devolverLibro(libro inventarioLibros[], int totalLibros, prestamo prestamosActivos[], int totalPrestamos){
     cout << "\n========================================" << endl;
     cout << "           DEVOLUCION DE LIBRO" << endl;
     cout << "========================================" << endl;
@@ -472,16 +495,35 @@ void devolverLibro(libro inventarioLibros[], int totalLibros) {
     int idDevolver = leerEntero("Ingrese el ID del libro que desea devolver: ");
 
     bool libroEncontrado = false;
+    bool prestamoEncontrado = false;
 
     // Busca el libro en el inventario
     for (int i = 0; i < totalLibros; i++) {
         if (inventarioLibros[i].ID == idDevolver) {
             libroEncontrado = true;
-            
-            inventarioLibros[i].unidades_disponible++;
-            guardarLibros(inventarioLibros, totalLibros);
-            cout << "Gracias por su devolucion, estudiante " << carnetEstudiante << "." << endl;
-            cout << "Libro reintegrado al inventario con exito." << endl;
+
+            //buscar el prestamo registrado
+            for(int j=0; j< totalPrestamos; j++){
+
+                if(prestamosActivos[j].libro == idDevolver && prestamosActivos[j].carnet == carnetEstudiante && prestamosActivos[j].activo == true){
+
+                    
+                prestamosActivos[j].activo =false;
+
+                    // reintegra unidades al invetario
+                    inventarioLibros[i].unidades_disponible++;
+                    guardarLibros(inventarioLibros,totalLibros);
+
+                    prestamoEncontrado = true;
+                    cout << "Gracias por su devolucion, estudiante " << carnetEstudiante << "." << endl;
+                    cout << "Libro reintegrado al inventario con exito." << endl;  
+                    break;
+                } 
+            }
+            if(prestamoEncontrado == false){
+                cout <<"Error: no existe un prestamo activo para este estudiante" <<endl;
+                break;
+            }
         }
     }
 
