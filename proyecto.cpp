@@ -3,7 +3,6 @@
 #include<fstream>
 using namespace std;
 
-
 // structs fuera del main para que las funciones puedan usarlos globalmente
 struct libro{
     int ID=0;
@@ -23,9 +22,6 @@ struct prestamo{
     int libro;
     bool activo;
 };
-
-
-
 
 // Declaración de funciones
 void registrarLibro(libro inventarioLibros[], int &totalLibros, int max_libros);
